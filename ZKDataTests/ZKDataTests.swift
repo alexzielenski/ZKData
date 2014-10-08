@@ -44,5 +44,21 @@ class ZKDataTests: XCTestCase {
         XCTAssertEqual("aString", data.stringAtOffset(data.currentOffset, encoding: NSUTF8StringEncoding, length: 7), "Strings")
 
     }
+
+    func testOperators() {
+        var data = NSMutableData()
+        XCTAssertEqual(data.currentOffset, 0, "original offset")
+        data +> 20
+        XCTAssertEqual(data.currentOffset, 0, "maximum offset")
+        data <- 20
+        XCTAssertEqual(data.currentOffset, 0, "minimum offset")
+        data.setStringAtOffset("AAAAAAAAAAAAAAAAAAAA", offset: 0)
+        data >| data.length
+        XCTAssertEqual(data.currentOffset, data.length, "offset set")
+        data <- 10
+        XCTAssertEqual(10, data.currentOffset, "offset minus")
+        data +> 10
+        XCTAssertEqual(20, data.currentOffset, "offset plus")
+    }
     
 }

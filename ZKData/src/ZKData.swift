@@ -142,7 +142,16 @@ public extension NSData {
             return 0
         }
         set {
-            let num = NSNumber(long: newValue)
+            var val = newValue
+            if val > self.length {
+                val = self.length
+            }
+
+            if val < 0 {
+                val = 0
+            }
+
+            let num = NSNumber(long: val)
             objc_setAssociatedObject(self, &kOffsetKey, num, UInt(OBJC_ASSOCIATION_RETAIN))
         }
     }
