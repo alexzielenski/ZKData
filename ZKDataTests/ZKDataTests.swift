@@ -8,6 +8,7 @@
 
 import UIKit
 import XCTest
+//import ZKData
 
 class ZKDataTests: XCTestCase {
     
@@ -20,17 +21,28 @@ class ZKDataTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
-    
-    func testExample() {
+
+    func testData() {
         // This is an example of a functional test case.
-        XCTAssert(true, "Pass")
-    }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock() {
-            // Put the code you want to measure the time of here.
-        }
+        var data        = NSMutableData()
+        data.nextInt    = 1
+        data.nextShort  = 2
+        data.nextLong   = 3
+        data.nextFloat  = 4.0
+        data.nextDouble = 5.0
+        data.setStringAtOffset("aString", offset: data.currentOffset)
+
+        data.writeToFile("/Users/Alex/Desktop/testData", atomically: false)
+
+        data >| 0
+
+        XCTAssert(1 == data.nextInt, "nextInt")
+        XCTAssert(2 == data.nextShort, "nextShort")
+        XCTAssert(3 == data.nextLong, "nextLong")
+        XCTAssert(4.0 == data.nextFloat, "nextFloat")
+        XCTAssert(5.0 == data.nextDouble, "nextDouble")
+        XCTAssertEqual("aString", data.stringAtOffset(data.currentOffset, encoding: NSUTF8StringEncoding, length: 7), "Strings")
+
     }
     
 }
