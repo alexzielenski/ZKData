@@ -34,6 +34,64 @@ public func >|(left: NSData, right: Int) -> NSData {
 
 private var kOffsetKey = 0
 
+public extension UInt8 {
+    public var signed: Int8 {
+        get {
+            return Int8(self)
+        }
+        mutating set {
+            self = UInt8(newValue)
+        }
+    }
+    mutating func swap() -> UInt8 {
+        return self
+    }
+}
+
+public extension UInt16 {
+    public var signed: Int16 {
+        get {
+            return Int16(self)
+        }
+        mutating set {
+            self = UInt16(newValue)
+        }
+    }
+    mutating func swap() -> UInt16 {
+        self = CFSwapInt16(self)
+        return self
+    }
+}
+
+public extension UInt32 {
+    public var signed: Int32 {
+        get {
+            return Int32(self)
+        }
+        mutating set {
+            self = UInt32(newValue)
+        }
+    }
+    mutating func swap() -> UInt32 {
+        self = CFSwapInt32(self)
+        return self
+    }
+}
+
+public extension UInt64 {
+    public var signed: Int64 {
+        get {
+            return Int64(self)
+        }
+        mutating set {
+            self = UInt64(newValue)
+        }
+    }
+    mutating func swap() -> UInt64 {
+        self = CFSwapInt64(self)
+        return self
+    }
+}
 
 //MARK: Unsigned Conversions
 /** Conversion from primitive types to their unsigned
@@ -42,9 +100,6 @@ private var kOffsetKey = 0
 public extension Int8 {
     public var unsigned: UInt8 {
         get {
-            if self < 0 {
-                return 0
-            }
             return UInt8(self)
         }
         mutating set {
@@ -64,9 +119,6 @@ public extension Int8 {
 public extension Int16 {
     public var unsigned: UInt16 {
         get {
-            if self < 0 {
-                return 0
-            }
             return UInt16(self)
         }
         mutating set {
@@ -86,9 +138,6 @@ public extension Int16 {
 public extension Int32 {
     public var unsigned: UInt32 {
         get {
-            if self < 0 {
-                return 0
-            }
             return UInt32(self)
         }
         mutating set {
@@ -109,9 +158,6 @@ public extension Int32 {
 public extension Int64 {
     public var unsigned: UInt64 {
         get {
-            if self < 0 {
-                return 0;
-            }
             return UInt64(self)
         }
         mutating set {
