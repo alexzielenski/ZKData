@@ -452,7 +452,7 @@ public extension NSMutableData {
         setValueAtOffset(Float64.self, value: &val, offset: offset)
     }
 
-    public func setStringAtOffset(value: String, offset: Int) {
+    public func setStringAtOffset(value: String, length: Int, offset: Int) {
         let stringData = (value as NSString).dataUsingEncoding(NSUTF8StringEncoding)
         if let data = stringData {
             let bytes = data.bytes
@@ -461,6 +461,15 @@ public extension NSMutableData {
                 range.length = 0
             }
             replaceBytesInRange(range, withBytes: bytes, length: data.length)
+            
+            for i in 0..<(length - data.length) {
+                // i think there's a better way to do this
+                var ptr = UnsafeMutablePointer<UInt8>.alloc(1)
+                ptr.initialize(0)
+                replaceBytesInRange(NSMakeRange(offset + data.length + i, sizeof(UInt8)), withBytes: ptr)
+                ptr.dealloc(1)
+            }
+            
         }
     }
     
