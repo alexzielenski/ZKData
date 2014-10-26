@@ -11,7 +11,7 @@ import ObjectiveC
 
 //MARK: Operators
 /** Shorthand for adjusting the current offset in
-  * the reading of the NSData for nextInt, etc.
+* the reading of the NSData for nextInt, etc.
 **/
 infix operator <- { associativity left }
 infix operator +> { associativity left }
@@ -95,7 +95,7 @@ public extension UInt64 {
 
 //MARK: Unsigned Conversions
 /** Conversion from primitive types to their unsigned
-  * compliment using dot syntax. Watch out for overflows
+* compliment using dot syntax. Watch out for overflows
 **/
 public extension Int8 {
     public var unsigned: UInt8 {
@@ -110,7 +110,7 @@ public extension Int8 {
             }
         }
     }
-
+    
     mutating func swap() -> Int8 {
         return self
     }
@@ -148,7 +148,7 @@ public extension Int32 {
             }
         }
     }
-
+    
     mutating func swap() -> Int32 {
         self.unsigned = CFSwapInt32(self.unsigned)
         return self
@@ -176,7 +176,7 @@ public extension Int64 {
 
 //MARK: ZKData
 /** Adds currentOffset property and ability to easily
-  * read common primitive types concisely with dot syntax
+* read common primitive types concisely with dot syntax
 **/
 public extension NSData {
     public var currentOffset: Int {
@@ -192,16 +192,16 @@ public extension NSData {
             if val > self.length {
                 val = self.length
             }
-
+            
             if val < 0 {
                 val = 0
             }
-
+            
             let num = NSNumber(long: val)
             objc_setAssociatedObject(self, &kOffsetKey, num, UInt(OBJC_ASSOCIATION_RETAIN))
         }
     }
-
+    
     // Subscript getters
     /** Cannot do setters due to limitations in Swift **/
     subscript(offset: Int) -> Int16 {
@@ -209,31 +209,31 @@ public extension NSData {
             return self.shortAtOffset(offset)
         }
     }
-
+    
     subscript(offset: Int) -> Int32 {
         get {
             return self.intAtOffset(offset)
         }
     }
-
+    
     subscript(offset: Int) -> Int64 {
         get {
             return self.longAtOffset(offset)
         }
     }
-
+    
     subscript(offset: Int) -> Float {
         get {
             return self.floatAtOffset(offset)
         }
     }
-
+    
     subscript(offset: Int) -> Float64 {
         get {
             return self.doubleAtOffset(offset)
         }
     }
-
+    
     //MARK: next getters
     public var nextByte: Int8 {
         get {
@@ -242,7 +242,7 @@ public extension NSData {
             return value
         }
     }
-
+    
     public var nextShort: Int16 {
         get {
             let value = shortAtOffset(self.currentOffset)
@@ -258,7 +258,7 @@ public extension NSData {
             return value
         }
     }
-
+    
     public var nextLong: Int64 {
         get {
             let value = longAtOffset(self.currentOffset)
@@ -266,7 +266,7 @@ public extension NSData {
             return value
         }
     }
-
+    
     public var nextFloat: Float32 {
         get {
             let value = floatAtOffset(self.currentOffset)
@@ -274,7 +274,7 @@ public extension NSData {
             return value
         }
     }
-
+    
     public var nextDouble: Float64 {
         get {
             let value = doubleAtOffset(self.currentOffset)
@@ -282,7 +282,7 @@ public extension NSData {
             return value
         }
     }
-
+    
     private func valueAtOffset<T>(type: T.Type, offset: Int) -> T {
         let pointer = UnsafeMutablePointer<T>.alloc(sizeof(T) * 1)
         self.getBytes(pointer, range: NSMakeRange(offset, sizeof(T)));
@@ -290,51 +290,51 @@ public extension NSData {
         pointer.destroy()
         return value
     }
-
+    
     //MARK: Specific Offset Getters
     /** Used to get primitives at certain offsets **/
     public func byteAtOffset(offset: Int) -> Int8 {
         return valueAtOffset(Int8.self, offset: offset)
     }
-
+    
     public func shortAtOffset(offset: Int) -> Int16 {
         return valueAtOffset(Int16.self, offset: offset)
     }
-
+    
     public func intAtOffset(offset: Int) -> Int32 {
         return valueAtOffset(Int32.self, offset: offset)
     }
-
+    
     public func longAtOffset(offset: Int) -> Int64 {
         return valueAtOffset(Int64.self, offset: offset)
     }
-
+    
     public func floatAtOffset(offset: Int) -> Float32 {
         return valueAtOffset(Float32.self, offset: offset)
     }
-
+    
     public func doubleAtOffset(offset: Int) -> Float64 {
         return valueAtOffset(Float64.self, offset: offset)
     }
-
+    
     public func stringAtOffset(offset: Int, encoding: NSStringEncoding, length: Int) -> String {
         let pointer = UnsafeMutablePointer<UInt8>.alloc(length)
         self.getBytes(pointer, range: NSMakeRange(offset, length))
-
+        
         return NSString(bytesNoCopy: pointer, length: length, encoding: encoding, freeWhenDone: true) as String
     }
-
+    
 }
 
 private var kReplaceKey = 0
 
 //MARK: ZKMutableData
 /** Same as above except the client is able to insert/replace
-  * common primitives using dot syntax such as data.nextInt = 4
-  * 
-  * if replaceMode is set to true, setting nextInt(etc.) will replace
-  * the bytes after the current offset, if it is false the int will
-  * be inserted into the current offset.
+* common primitives using dot syntax such as data.nextInt = 4
+*
+* if replaceMode is set to true, setting nextInt(etc.) will replace
+* the bytes after the current offset, if it is false the int will
+* be inserted into the current offset.
 **/
 public extension NSMutableData {
     // Dictates whether the set... methods will insert or replace
@@ -351,7 +351,7 @@ public extension NSMutableData {
             objc_setAssociatedObject(self, &kReplaceKey, num, UInt(OBJC_ASSOCIATION_RETAIN))
         }
     }
-
+    
     //MARK: next   setters
     override public var nextByte: Int8 {
         get {
@@ -362,7 +362,7 @@ public extension NSMutableData {
             self +> sizeof(newValue.dynamicType)
         }
     }
-
+    
     override public var nextShort: Int16 {
         get {
             return super.nextShort
@@ -372,7 +372,7 @@ public extension NSMutableData {
             self +> sizeof(newValue.dynamicType)
         }
     }
-
+    
     override public var nextInt: Int32 {
         get {
             return super.nextInt
@@ -382,7 +382,7 @@ public extension NSMutableData {
             self +> sizeof(newValue.dynamicType)
         }
     }
-
+    
     override public var nextLong: Int64 {
         get {
             return super.nextLong
@@ -392,7 +392,7 @@ public extension NSMutableData {
             self +> sizeof(newValue.dynamicType)
         }
     }
-
+    
     override public var nextFloat: Float32 {
         get {
             return super.nextFloat
@@ -402,7 +402,7 @@ public extension NSMutableData {
             self +> sizeof(newValue.dynamicType)
         }
     }
-
+    
     override public var nextDouble: Float64 {
         get {
             return super.nextDouble
@@ -412,7 +412,7 @@ public extension NSMutableData {
             self +> sizeof(newValue.dynamicType)
         }
     }
-
+    
     //MARK: Set Values at Offsets
     private func setValueAtOffset<T>(type: T.Type, inout value: T, offset: Int) {
         var range = NSMakeRange(offset, sizeof(value.dynamicType))
@@ -421,37 +421,37 @@ public extension NSMutableData {
         }
         replaceBytesInRange(range, withBytes: &value, length: sizeof(value.dynamicType))
     }
-
+    
     public func setByteAtOffset(value: Int8, offset: Int) {
         var val = value
         setValueAtOffset(Int8.self, value: &val, offset: offset)
     }
-
+    
     public func setShortAtOffset(value: Int16, offset: Int) {
         var val = value
         setValueAtOffset(Int16.self, value: &val, offset: offset)
     }
-
+    
     public func setIntAtOffset(value: Int32, offset: Int) {
         var val = value
         setValueAtOffset(Int32.self, value: &val, offset: offset)
     }
-
+    
     public func setLongAtOffset(value: Int64, offset: Int) {
         var val = value
         setValueAtOffset(Int64.self, value: &val, offset: offset)
     }
-
+    
     public func setFloatAtOffset(value: Float, offset: Int) {
         var val = value
         setValueAtOffset(Float.self, value: &val, offset: offset)
     }
-
+    
     public func setDoubleAtOffset(value: Float64, offset: Int) {
         var val = value
         setValueAtOffset(Float64.self, value: &val, offset: offset)
     }
-
+    
     public func setStringAtOffset(value: String, length: Int, offset: Int) {
         let stringData = (value as NSString).dataUsingEncoding(NSUTF8StringEncoding)
         if let data = stringData {
@@ -462,11 +462,11 @@ public extension NSMutableData {
             }
             replaceBytesInRange(range, withBytes: bytes, length: data.length)
             
-            for i in 0..<(length - data.length) {
-                // i think there's a better way to do this
+            let pad = length - data.length
+            if pad > 0 {
                 var ptr = UnsafeMutablePointer<UInt8>.alloc(1)
                 ptr.initialize(0)
-                replaceBytesInRange(NSMakeRange(offset + data.length + i, sizeof(UInt8)), withBytes: ptr)
+                replaceBytesInRange(NSMakeRange(offset + data.length, replaceMode ? pad : 0), withBytes: ptr, length: pad)
                 ptr.dealloc(1)
             }
             
